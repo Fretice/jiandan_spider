@@ -27,14 +27,11 @@ class JiandanDownloadPipeline(FilesPipeline):
 
     def get_media_requests(self, item, info):
         for file_url in item['file_urls']:
-            self.default_headers['referer'] = file_url.replace("//","")
-            if 'gif' in file_url:
-                continue
             yield Request(file_url.replace("//","http://"), headers=self.default_headers)
 
     def item_completed(self, results, item, info):
         file_paths = [x['path'] for ok, x in results if ok]
         if not file_paths:
             raise DropItem('Item contains no images')
-        item['referer'] = file_paths
+        item['file_paths'] = file_paths
         return item

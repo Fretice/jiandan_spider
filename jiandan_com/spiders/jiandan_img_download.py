@@ -25,9 +25,10 @@ class download_jiandan(Spider):
         if list_imgs:
             item = JiandanImsgItem()
             item['file_urls'] = list_imgs
+            item['file_paths'] = response.url
             yield item
 
         next_page = response.css('div.comments div.cp-pagenavi a.previous-comment-page').xpath('@href').extract_first()
-        if next_page is not None:
+        if next_page is not None and '2300' not in next_page:
             next_page = response.urljoin(next_page)
             yield Request(next_page, callback=self.parse)
